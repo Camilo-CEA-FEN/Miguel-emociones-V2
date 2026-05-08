@@ -3,180 +3,67 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #F2F1EF;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F2F1EF;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+.page { width: 100%; max-width: 1020px; }
+.header { text-align: center; margin-bottom: 16px; }
+.header h1 {
+  font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
+  color: #1A1A1A; letter-spacing: -0.5px; margin-bottom: 3px;
+}
+.header p { font-size: 10px; color: #AAA; letter-spacing: 1px; text-transform: uppercase; }
 
-  .page { width: 100%; max-width: 1020px; }
+.chart-row { display: flex; align-items: stretch; gap: 8px; }
+.y-axis { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 2px 0; min-width: 22px; }
+.sign { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: #555; line-height: 1; }
+.axis-word { writing-mode: vertical-rl; transform: rotate(180deg); font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #555; }
+.grid-section { flex: 1; min-width: 0; }
+.q-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 4px; }
+.q-row.bot { margin-top: 4px; margin-bottom: 0; }
+.q-badge { text-align: center; font-size: 8.5px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 4px 6px; border-radius: 4px; }
+.q-r { background: rgba(183,28,28,.09); color: #B71C1C; }
+.q-y { background: rgba(191,54,12,.09); color: #BF360C; }
+.q-b { background: rgba(13,71,161,.09); color: #0D47A1; }
+.q-g { background: rgba(27,94,32,.09); color: #1B5E20; }
 
-  .header { text-align: center; margin-bottom: 16px; }
-  .header h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-    color: #1A1A1A;
-    letter-spacing: -0.5px;
-    margin-bottom: 3px;
-  }
-  .header p {
-    font-size: 10px;
-    color: #AAA;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+.grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 1.5px; background: rgba(0,0,0,.12); border-radius: 6px; overflow: hidden; }
+.cell { font-size: 7.5px; font-weight: 500; text-align: center; padding: 5px 2px; min-height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .1s, box-shadow .1s; line-height: 1.2; user-select: none; }
+.cell:hover { transform: scale(1.3); z-index: 100; position: relative; box-shadow: 0 4px 18px rgba(0,0,0,.4); font-size: 10px; font-weight: 700; border-radius: 3px; }
+.cell.sel { outline: 2.5px solid rgba(255,255,255,.9); outline-offset: -1px; transform: scale(1.2); z-index: 90; position: relative; font-weight: 700; border-radius: 3px; }
 
-  .chart-row { display: flex; align-items: stretch; gap: 8px; }
+/* Tooltip */
+.tooltip {
+  position: fixed; z-index: 999; pointer-events: none;
+  padding: 10px 16px; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.35);
+  opacity: 0; transition: opacity .15s ease;
+  max-width: 240px; text-align: center;
+  transform: translateX(-50%);
+}
+.tooltip.show { opacity: 1; }
+.tooltip .t-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 5px; }
+.tooltip .t-desc { font-size: 11px; font-style: italic; line-height: 1.4; opacity: .9; }
 
-  .y-axis {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2px 0;
-    min-width: 22px;
-  }
-  .sign {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: #555;
-    line-height: 1;
-  }
-  .axis-word {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-family: 'Syne', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #555;
-  }
-
-  .grid-section { flex: 1; min-width: 0; }
-
-  .q-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3px;
-    margin-bottom: 4px;
-  }
-  .q-row.bottom { margin-top: 4px; margin-bottom: 0; }
-  .q-badge {
-    text-align: center;
-    font-size: 8.5px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 4px 6px;
-    border-radius: 4px;
-  }
-  .q-r { background: rgba(183,28,28,0.09); color: #B71C1C; }
-  .q-y { background: rgba(191,54,12,0.09); color: #BF360C; }
-  .q-b { background: rgba(13,71,161,0.09); color: #0D47A1; }
-  .q-g { background: rgba(27,94,32,0.09); color: #1B5E20; }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 1.5px;
-    background: rgba(0,0,0,0.12);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .cell {
-    font-size: 7.5px;
-    font-weight: 500;
-    text-align: center;
-    padding: 5px 2px;
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-    line-height: 1.2;
-    user-select: none;
-  }
-  .cell:hover {
-    transform: scale(1.35);
-    z-index: 100;
-    position: relative;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
-    font-size: 10.5px;
-    font-weight: 700;
-    border-radius: 3px;
-  }
-  .cell.selected {
-    outline: 2.5px solid rgba(255,255,255,0.9);
-    outline-offset: -1px;
-    transform: scale(1.2);
-    z-index: 90;
-    position: relative;
-    font-weight: 700;
-    border-radius: 3px;
-  }
-
-  .x-axis {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .x-axis .axis-word { writing-mode: initial; transform: none; }
-
-  .selected-bar {
-    margin-top: 12px;
-    text-align: center;
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  .selected-pill {
-    display: inline-block;
-    padding: 6px 20px;
-    border-radius: 100px;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    transition: background 0.2s, color 0.2s;
-    background: #E0DED9;
-    color: #888;
-  }
-  .selected-pill.active {
-    color: white;
-  }
-  .hint {
-    font-size: 10px;
-    color: #BBB;
-    text-align: center;
-    margin-top: 6px;
-    letter-spacing: 0.5px;
-  }
+.x-axis { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+.x-axis .axis-word { writing-mode: initial; transform: none; }
+.hint { font-size: 10px; color: #BBB; text-align: center; margin-top: 8px; letter-spacing: .5px; }
 </style>
 </head>
 <body>
 <div class="page">
   <div class="header">
     <h1>Medidor Emocional</h1>
-    <p>©2021 Universidad de Yale · Método RULER — Versión extendida · Contexto laboral adulto</p>
+    <p>©2021 Universidad de Yale · Método RULER — Versión extendida</p>
   </div>
-
   <div class="chart-row">
     <div class="y-axis" id="yAxis">
       <span class="sign">+</span>
@@ -189,135 +76,122 @@
         <div class="q-badge q-y">Alta energía · Cómodo</div>
       </div>
       <div class="grid" id="emotionGrid"></div>
-      <div class="q-row bottom">
+      <div class="q-row bot">
         <div class="q-badge q-b">Baja energía · Incómodo</div>
         <div class="q-badge q-g">Baja energía · Cómodo</div>
       </div>
     </div>
   </div>
-
   <div class="x-axis">
     <span class="sign">−</span>
     <span class="axis-word">Comodidad</span>
     <span class="sign">+</span>
   </div>
+  <div class="hint">Pasa el cursor sobre una emoción para ver su descripción</div>
+</div>
 
-  <div class="selected-bar">
-    <div class="selected-pill" id="pill">— — —</div>
-  </div>
-  <div class="hint">Pasa el cursor para ver · Haz clic para seleccionar</div>
+<div class="tooltip" id="tooltip">
+  <div class="t-name" id="tName"></div>
+  <div class="t-desc" id="tDesc"></div>
 </div>
 
 <script>
 const emotions = [
-  // Fila 0 — energía máxima
-  ['Furioso','Frenético','Desesperado','Aterrorizado','Desbordado','Hostil',       'Eufórico','Extasiado','Exaltado','Arrebatado','Apasionado','Radiante'],
-  // Fila 1
-  ['Indignado','Angustiado','Alarmado','Agitado','Crispado','Impotente',           'Entusiasmado','Empoderado','Decidido','Audaz','Vigoroso','Exuberante'],
-  // Fila 2
-  ['Irritado','Ansioso','Estresado','Saturado','Tenso','Abrumado',                 'Motivado','Inspirado','Dinámico','Seguro','Optimista','Dichoso'],
-  // Fila 3
-  ['Fastidiado','Preocupado','Inquieto','Nervioso','Intranquilo','Molesto',         'Animado','Ilusionado','Curioso','Alegre','Festivo','Emocionado'],
-  // Fila 4
-  ['Receloso','Suspicaz','Aprehensivo','Escéptico','Desconfiado','Cauteloso',       'Interesado','Receptivo','Confiado','Amable','Conectado','Esperanzado'],
-  // Fila 5 — cerca del eje horizontal
-  ['Incómodo','Alerta','Defensivo','Susceptible','Bloqueado','Irritable',           'Atento','Comprometido','Dispuesto','Activo','Presente','Satisfecho'],
-  // Fila 6 — debajo del eje horizontal
-  ['Desmotivado','Aburrido','Confundido','Inseguro','Resignado','Tímido',           'Cómodo','Capaz','Tranquilo','Bien','Pensativo','Reflexivo'],
-  // Fila 7
-  ['Triste','Apático','Decepcionado','Desanimado','Culpable','Avergonzado',         'Acogido','Valorado','Aliviado','Equilibrado','Sereno','Compasivo'],
-  // Fila 8
-  ['Melancólico','Agotado','Desconectado','Alienado','Incomprendido','Vacío',       'Agradecido','Realizado','Conmovido','Aceptado','Íntegro','Ecuánime'],
-  // Fila 9
-  ['Abatido','Desesperanzado','Indiferente','Solo','Invisible','Humillado',         'Pleno','Reposado','Armonioso','Calmado','Apacible','Descansado'],
-  // Fila 10
-  ['Devastado','Miserable','Rechazado','Desolado','Desvalorizado','Derrotado',      'Nutrido','Completo','Repuesto','Querido','Distendido','Compuesto'],
-  // Fila 11 — energía mínima
-  ['Anulado','Paralizado','Excluido','Abandonado','Quebrado','Hundido',             'Somnoliento','Plácido','Complacido','Adormecido','En paz','Dormitando']
+  ['Furioso','Frenético','Desesperado','Aterrorizado','Desbordado','Hostil','Eufórico','Extasiado','Exaltado','Arrebatado','Apasionado','Radiante'],
+  ['Indignado','Angustiado','Alarmado','Agitado','Crispado','Impotente','Entusiasmado','Empoderado','Decidido','Audaz','Vigoroso','Exuberante'],
+  ['Irritado','Ansioso','Estresado','Saturado','Tenso','Abrumado','Motivado','Inspirado','Dinámico','Seguro','Optimista','Dichoso'],
+  ['Fastidiado','Preocupado','Inquieto','Nervioso','Intranquilo','Molesto','Animado','Ilusionado','Curioso','Alegre','Festivo','Emocionado'],
+  ['Receloso','Suspicaz','Aprehensivo','Escéptico','Desconfiado','Cauteloso','Interesado','Receptivo','Confiado','Amable','Conectado','Esperanzado'],
+  ['Incómodo','Alerta','Defensivo','Susceptible','Bloqueado','Irritable','Atento','Comprometido','Dispuesto','Activo','Presente','Satisfecho'],
+  ['Desmotivado','Aburrido','Confundido','Inseguro','Resignado','Tímido','Cómodo','Capaz','Tranquilo','Bien','Pensativo','Reflexivo'],
+  ['Triste','Apático','Decepcionado','Desanimado','Culpable','Avergonzado','Acogido','Valorado','Aliviado','Equilibrado','Sereno','Compasivo'],
+  ['Melancólico','Agotado','Desconectado','Alienado','Incomprendido','Vacío','Agradecido','Realizado','Conmovido','Aceptado','Íntegro','Ecuánime'],
+  ['Abatido','Desesperanzado','Indiferente','Solo','Invisible','Humillado','Pleno','Reposado','Armonioso','Calmado','Apacible','Descansado'],
+  ['Devastado','Miserable','Rechazado','Desolado','Desvalorizado','Derrotado','Nutrido','Completo','Repuesto','Querido','Distendido','Compuesto'],
+  ['Anulado','Paralizado','Excluido','Abandonado','Quebrado','Hundido','Somnoliento','Plácido','Complacido','Adormecido','En paz','Dormitando']
 ];
 
-const redRows   = ['#B71C1C','#C62828','#D32F2F','#E53935','#EF5350','#FFCDD2'];
-const yelRows   = ['#BF360C','#D84315','#E64A19','#F4511E','#FF7043','#FFCCBC'];
-const bluRows   = ['#BBDEFB','#64B5F6','#2196F3','#1976D2','#1565C0','#0D47A1'];
-const grnRows   = ['#C8E6C9','#81C784','#4CAF50','#388E3C','#2E7D32','#1B5E20'];
+const desc = {
+  'Furioso':'Ira intensa que impulsa a reaccionar agresivamente','Frenético':'Actividad descontrolada bajo presión extrema','Desesperado':'Sin salida visible; urgencia angustiante','Aterrorizado':'Miedo paralizante ante una amenaza percibida','Desbordado':'Incapaz de manejar lo que está ocurriendo','Hostil':'Actitud agresiva y cerrada hacia el entorno',
+  'Indignado':'Rabia ante algo percibido como profundamente injusto','Angustiado':'Tensión interna sostenida sin alivio posible','Alarmado':'Reacción brusca ante señal de peligro real','Agitado':'Inquietud física y mental difícil de calmar','Crispado':'Tensión acumulada que busca una salida','Impotente':'Sin recursos percibidos para cambiar la situación',
+  'Irritado':'Molestia sostenida ante estímulos repetidos','Ansioso':'Anticipación negativa de lo que puede ocurrir','Estresado':'Las demandas superan los recursos disponibles','Saturado':'Al límite de lo que se puede tolerar','Tenso':'Rigidez interna por presión sostenida','Abrumado':'Carga excesiva que supera la capacidad de respuesta',
+  'Fastidiado':'Molestia leve pero persistente en el tiempo','Preocupado':'Atención focalizada en posibles problemas futuros','Inquieto':'Dificultad para mantenerse en calma','Nervioso':'Activación interna ante situación incierta','Intranquilo':'Falta de paz interior en el momento actual','Molesto':'Irritación concreta por algo del entorno cercano',
+  'Receloso':'Desconfianza vigilante hacia el otro','Suspicaz':'Tendencia a interpretar mal las intenciones ajenas','Aprehensivo':'Anticipación temerosa de algo negativo','Escéptico':'Duda sistemática sobre lo que se afirma','Desconfiado':'Dificultad para creer en las intenciones del otro','Cauteloso':'Prudencia activa ante posible riesgo o daño',
+  'Incómodo':'Malestar leve sin causa del todo clara','Alerta':'Vigilancia activa ante posible amenaza próxima','Defensivo':'Postura de autoprotección ante la crítica','Susceptible':'Sensibilidad elevada al juicio externo','Bloqueado':'Incapacidad momentánea para avanzar o decidir','Irritable':'Umbral bajo de tolerancia frente al estrés',
 
-const lightBg = new Set(['#FFCDD2','#FFCCBC','#BBDEFB','#64B5F6','#C8E6C9','#81C784']);
+  'Eufórico':'Alegría intensa que desborda el cuerpo entero','Extasiado':'Placer o admiración en su estado máximo','Exaltado':'Emoción positiva intensa y desbordante','Arrebatado':'Arrastrado por una emoción positiva muy poderosa','Apasionado':'Compromiso profundo y ardiente con lo que se hace','Radiante':'Bienestar interior que irradia hacia el exterior',
+  'Entusiasmado':'Energía positiva dirigida con claridad a un propósito','Empoderado':'Sensación de fuerza y capacidad propia plena','Decidido':'Claridad interna que impulsa a actuar ya','Audaz':'Disposición a tomar riesgos con plena confianza','Vigoroso':'Fuerza física y mental en su plenitud','Exuberante':'Alegría expansiva que no puede contenerse',
+  'Motivado':'Impulso interno sostenido hacia una meta concreta','Inspirado':'Conexión con algo que da sentido y dirección','Dinámico':'Energía activa orientada al movimiento y la acción','Seguro':'Confianza tranquila en las propias capacidades','Optimista':'Expectativa positiva genuina sobre lo que viene','Dichoso':'Satisfacción profunda con lo que se vive ahora',
+  'Animado':'Buen ánimo que favorece la participación activa','Ilusionado':'Esperanza activa y vívida hacia algo deseado','Curioso':'Apertura genuina e interés ante lo desconocido','Alegre':'Bienestar ligero y contagioso','Festivo':'Disposición plena al disfrute compartido','Emocionado':'Activación positiva ante algo significativo que ocurre',
+  'Interesado':'Atención genuina dirigida hacia algo o alguien','Receptivo':'Apertura real para escuchar y recibir','Confiado':'Seguridad en el vínculo o en la situación','Amable':'Disposición cálida y abierta hacia los demás','Conectado':'Sensación de vínculo real con el entorno','Esperanzado':'Fe activa en que algo bueno puede ocurrir',
+  'Atento':'Presencia activa y consciente en el aquí y ahora','Comprometido':'Implicación real y sostenida con lo que se hace','Dispuesto':'Apertura concreta a participar o colaborar','Activo':'Energía bien orientada hacia la acción','Presente':'Plena conciencia del momento que se vive','Satisfecho':'Sensación de suficiencia y cierre positivo',
 
-const grid = document.getElementById('emotionGrid');
-const pill = document.getElementById('pill');
-let selectedCell = null;
+  'Desmotivado':'Sin impulso interno para iniciar o continuar','Aburrido':'Falta de estímulo o significado en el contexto','Confundido':'Dificultad para entender lo que está ocurriendo','Inseguro':'Duda sobre las propias capacidades o valor personal','Resignado':'Aceptación pasiva de algo no deseado o no justo','Tímido':'Inhibición ante la mirada o el juicio del otro',
+  'Triste':'Pérdida o ausencia de algo importante para uno','Apático':'Indiferencia hacia lo que antes importaba','Decepcionado':'Expectativa no cumplida por el entorno o las personas','Desanimado':'Pérdida del impulso para seguir adelante','Culpable':'Responsabilidad percibida por un daño causado','Avergonzado':'Exposición negativa ante la mirada de los demás',
+  'Melancólico':'Nostalgia por algo perdido o no alcanzado','Agotado':'Cansancio profundo que no cede con el descanso','Desconectado':'Falta de vínculo real con el entorno o las personas','Alienado':'Sensación profunda de no pertenecer al lugar','Incomprendido':'Percepción de que nadie logra realmente verte','Vacío':'Ausencia de sentido o emoción significativa',
+  'Abatido':'Ánimo muy bajo sin energía para reaccionar','Desesperanzado':'Sin expectativa de que las cosas puedan mejorar','Indiferente':'Pérdida del interés en todo lo que rodea','Solo':'Ausencia de vínculo afectivo real y sentido','Invisible':'Sensación de no ser visto ni considerado','Humillado':'Dignidad afectada por el trato recibido de otros',
+  'Devastado':'Impacto emocional que derrumba el equilibrio interior','Miserable':'Sufrimiento sostenido sin alivio visible posible','Rechazado':'Exclusión dolorosa por parte del entorno cercano','Desolado':'Profunda soledad interior sin ninguna contención','Desvalorizado':'Percepción de que el propio aporte no importa','Derrotado':'Sensación de haber perdido una lucha importante',
+  'Anulado':'Identidad suprimida por el entorno o la situación','Paralizado':'Incapacidad total para actuar o reaccionar','Excluido':'Separación forzada del grupo o comunidad','Abandonado':'Ausencia de apoyo en el momento de mayor necesidad','Quebrado':'Límite emocional superado con daño profundo','Hundido':'Peso emocional que impide sostenerse en pie',
 
-emotions.forEach((row, ri) => {
-  row.forEach((word, ci) => {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
+  'Cómodo':'Bienestar y facilidad en el momento presente','Capaz':'Confianza tranquila en las propias habilidades','Tranquilo':'Ausencia de tensión interna relevante','Bien':'Estado de equilibrio general sin conflicto','Pensativo':'Atención interna hacia algo que se está procesando','Reflexivo':'Observación serena de la propia experiencia',
+  'Acogido':'Sensación de pertenencia y de bienvenida real','Valorado':'Percepción de que el propio aporte importa','Aliviado':'Tensión que cede después de resolverse algo','Equilibrado':'Armonía entre el mundo interno y el externo','Sereno':'Calma profunda ante lo que ocurre alrededor','Compasivo':'Apertura empática ante el sufrimiento del otro',
+  'Agradecido':'Reconocimiento cálido de lo recibido o vivido','Realizado':'Satisfacción profunda con lo que se ha logrado','Conmovido':'Toque emocional ante algo verdaderamente significativo','Aceptado':'Integrado tal como se es, sin condiciones','Íntegro':'Coherencia plena entre los valores y las acciones','Ecuánime':'Equilibrio estable ante situaciones muy diversas',
+  'Pleno':'Completitud interior sin ninguna falta percibida','Reposado':'Descanso activo que restaura la energía vital','Armonioso':'Consonancia profunda entre lo interno y el entorno','Calmado':'Serenidad activa tras momentos de agitación','Apacible':'Paz suave que no requiere ningún esfuerzo','Descansado':'Recuperación efectiva del cansancio acumulado',
+  'Nutrido':'Sensación de haber recibido lo necesario para seguir','Completo':'Nada falta en este momento o situación presente','Repuesto':'Recuperación genuina tras desgaste o dificultad','Querido':'Presencia afectiva significativa y sostenida del entorno','Distendido':'Relajación muscular y mental sostenida y profunda','Compuesto':'Calma controlada con presencia tranquila y firme',
+  'Somnoliento':'Transición suave hacia un descanso más profundo','Plácido':'Quietud agradable sin ninguna perturbación','Complacido':'Satisfacción genuina con lo que ha ocurrido','Adormecido':'Estado de baja activación y reposo profundo','En paz':'Ausencia plena de conflicto interno y externo','Dormitando':'Energía en su mínimo en estado de descanso pleno'
+};
 
+const redRows=['#B71C1C','#C62828','#D32F2F','#E53935','#EF5350','#FFCDD2'];
+const yelRows=['#BF360C','#D84315','#E64A19','#F4511E','#FF7043','#FFCCBC'];
+const bluRows=['#BBDEFB','#64B5F6','#2196F3','#1976D2','#1565C0','#0D47A1'];
+const grnRows=['#C8E6C9','#81C784','#4CAF50','#388E3C','#2E7D32','#1B5E20'];
+const lightBg=new Set(['#FFCDD2','#FFCCBC','#BBDEFB','#64B5F6','#C8E6C9','#81C784']);
+
+const grid=document.getElementById('emotionGrid');
+const tip=document.getElementById('tooltip');
+const tName=document.getElementById('tName');
+const tDesc=document.getElementById('tDesc');
+
+emotions.forEach((row,ri)=>{
+  row.forEach((word,ci)=>{
+    const cell=document.createElement('div');
+    cell.className='cell';
     let bg;
-    if (ri < 6) {
-      bg = ci < 6 ? redRows[ri] : yelRows[ri];
-    } else {
-      const bi = ri - 6;
-      bg = ci < 6 ? bluRows[bi] : grnRows[bi];
-    }
+    if(ri<6){bg=ci<6?redRows[ri]:yelRows[ri];}
+    else{const bi=ri-6;bg=ci<6?bluRows[bi]:grnRows[bi];}
+    const light=lightBg.has(bg);
+    cell.style.backgroundColor=bg;
+    cell.style.color=light?'#1A1A1A':'white';
+    if(!light)cell.style.textShadow='0 1px 2px rgba(0,0,0,.22)';
+    cell.textContent=word;
 
-    const isLight = lightBg.has(bg);
-    cell.style.backgroundColor = bg;
-    cell.style.color = isLight ? '#1A1A1A' : 'white';
-    if (!isLight) cell.style.textShadow = '0 1px 2px rgba(0,0,0,0.22)';
-    cell.textContent = word;
-
-    cell.addEventListener('mouseenter', () => {
-      pill.textContent = word;
-      pill.style.background = bg;
-      pill.style.color = isLight ? '#1A1A1A' : 'white';
-      pill.classList.add('active');
+    cell.addEventListener('mouseenter',()=>{
+      tName.textContent=word;
+      tDesc.textContent=desc[word]||'';
+      tip.style.background=bg;
+      tip.style.color=light?'#1A1A1A':'white';
+      const r=cell.getBoundingClientRect();
+      const cx=r.left+r.width/2;
+      const tipH=70;
+      let top=r.bottom+8;
+      if(top+tipH>window.innerHeight-10) top=r.top-tipH-8;
+      tip.style.left=cx+'px';
+      tip.style.top=top+'px';
+      tip.classList.add('show');
     });
-    cell.addEventListener('mouseleave', () => {
-      if (selectedCell) {
-        const sc = selectedCell;
-        pill.textContent = sc._word;
-        pill.style.background = sc._bg;
-        pill.style.color = sc._light ? '#1A1A1A' : 'white';
-        pill.classList.add('active');
-      } else {
-        pill.textContent = '— — —';
-        pill.style.background = '#E0DED9';
-        pill.style.color = '#888';
-        pill.classList.remove('active');
-      }
+    cell.addEventListener('mouseleave',()=>{
+      tip.classList.remove('show');
     });
-    cell.addEventListener('click', () => {
-      if (selectedCell) selectedCell.classList.remove('selected');
-      if (selectedCell === cell) {
-        selectedCell = null;
-        pill.textContent = '— — —';
-        pill.style.background = '#E0DED9';
-        pill.style.color = '#888';
-        pill.classList.remove('active');
-      } else {
-        selectedCell = cell;
-        cell._word = word;
-        cell._bg = bg;
-        cell._light = isLight;
-        cell.classList.add('selected');
-        pill.textContent = word;
-        pill.style.background = bg;
-        pill.style.color = isLight ? '#1A1A1A' : 'white';
-        pill.classList.add('active');
-      }
-    });
-
     grid.appendChild(cell);
   });
 });
 
-// Sync y-axis height
-const syncHeight = () => {
-  const g = document.getElementById('emotionGrid');
-  document.getElementById('yAxis').style.height = g.offsetHeight + 'px';
+const syncH=()=>{
+  const g=document.getElementById('emotionGrid');
+  document.getElementById('yAxis').style.height=g.offsetHeight+'px';
 };
-setTimeout(syncHeight, 200);
-window.addEventListener('resize', syncHeight);
+setTimeout(syncH,200);
+window.addEventListener('resize',syncH);
 </script>
 </body>
 </html>
